@@ -607,3 +607,13 @@ class Inventario(Base):
             print("Inventario eliminado")
         else:
             print("No existe el inventario")
+
+
+def filtro_generico(session, tabla):
+    registro = session.query(tabla).all()
+
+    #Devolver registro en diccionario
+    registro_diccionario = [{columna: getattr(registro, columna) for columna in registro.__table__.columns.keys()} for registro in registro]
+
+    return registro_diccionario
+    
