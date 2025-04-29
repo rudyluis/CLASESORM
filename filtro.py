@@ -4,7 +4,9 @@ from sqlalchemy.orm  import sessionmaker, Session
 from sqlalchemy.inspection import inspect
 from ORM_1 import *
 
-engine = create_engine('postgresql://postgres:241210@localhost:5432/jardineria_clases')
+
+
+engine = create_engine('postgresql://postgres:123456@localhost:5432/jardineria')
 Session = sessionmaker(bind=engine)
 session = Session()
 
