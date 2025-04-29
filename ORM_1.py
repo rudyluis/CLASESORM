@@ -640,3 +640,31 @@ def mostrar_datos(session, modelo_o_resultados, campos=None):
     for item in resultados:
         datos = [f"{campo}: {getattr(item, campo)}" for campo in campos]
         print(", ".join(datos))
+
+
+def filtro_busqueda_generico(session, nombre_tabla, nombre_id, valor_buscar):
+    # Consultar la tabla y filtrar por el nombre_id y valor_buscar
+    registros = session.query(nombre_tabla).filter_by(**{nombre_id: valor_buscar}).all()
+    
+    # Verificar si se encontraron registros
+    if registros:
+        # Devolver los registros como una lista de diccionarios
+        registros_dict = [{columna: getattr(registro, columna) for columna in registro.__table__.columns.keys()} for registro in registros]
+        return registros_dict
+    else:
+        print("No se encontraron registros.")
+        return None
+
+
+def filtro_multiple(session, nombre_tabla, filtros):
+    """
+    Filtra registros usando múltiples condiciones dinámicas.
+
+    filtros: diccionario de columna: valor
+    """
+    query = session.query(nombre_tabla)
+    for campo, valor in filtros.items():
+        query = query.filter(getattr(nombre_tabla, campo) == valor)
+    registros = query.all()
+    registros_dict = [{columna: getattr(registro, columna) for columna in registro.__table__.columns.keys()} for registro in registros]
+    return registros_dict
