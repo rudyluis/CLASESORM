@@ -283,7 +283,7 @@ class Cliente(Base):
 class Pedido(Base):
     __tablename__ = 'pedido'
     idpedido = Column(Integer, primary_key=True)
-    codigopedido = Column(String(10), unique=True, nullable=False)
+    codigopedido = Column(String(10),  nullable=False)
     fechapedido = Column(Date, nullable=False)  ##
     fechaesperada = Column(Date, nullable=False)  ##
     fechaentrega = Column(Date)   ##
@@ -617,3 +617,26 @@ def filtro_generico(session, tabla):
 
     return registro_diccionario
     
+
+def mostrar_datos(session, modelo_o_resultados, campos=None):
+    from sqlalchemy.inspection import inspect
+
+    if isinstance(modelo_o_resultados, list):
+        resultados = modelo_o_resultados
+        modelo = resultados[0].__class__ if resultados else None
+    else:
+        modelo = modelo_o_resultados
+        
+        resultados = session.query(modelo).all()
+
+    
+    if campos is None and modelo:
+        campos = [c.key for c in inspect(modelo).mapper.column_attrs]
+    elif campos is None:
+        raise ValueError(
+            "No se proporcionaron campos y no se pudo inferir el modelo")
+
+    
+    for item in resultados:
+        datos = [f"{campo}: {getattr(item, campo)}" for campo in campos]
+        print(", ".join(datos))

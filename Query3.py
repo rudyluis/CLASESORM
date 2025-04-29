@@ -8,6 +8,13 @@ engine = create_engine('postgresql://postgres:123456@localhost:5432/jardineria_c
 Session = sessionmaker(bind=engine)
 session = Session()
 
+
+Oficinas = session.query(Oficina).filter(
+    and_(Oficina.ciudad == 'Madrid', Oficina.pais == 'España')).all()
+
+mostrar_datos(session, Oficinas, campos=['ciudad', 'pais', 'telefono'])
+
+quit()
 ## funcion de promedio avg
 result = session.query(func.avg(Producto.precioventa)).all()
 print(result)
